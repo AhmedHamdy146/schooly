@@ -13,7 +13,8 @@ import FormSelect from "../forms/FormSelectWithOptions";
 import { Clock } from "lucide-react";
 import FormDatePicker from "../forms/FormDatePicker";
 import { Button } from "../ui/button";
-import { ELessonType } from "@/types/enums";
+import { ELessonTypeString } from "@/types/enums";
+import { format } from "date-fns";
 
 export default function CreateSession() {
   const { isPending, mutate } = useCreateLesson();
@@ -22,22 +23,20 @@ export default function CreateSession() {
   const form = useForm<createLessonSchema>({
     resolver: zodResolver(createLessonSchema),
     defaultValues: {
-      to: "00:00:01",
+      to: "00:30:00",
       from: "00:00:00",
+      date: new Date(),
     },
   });
 
   function onSubmit(values: createLessonSchema) {
-    const formattedDate =
-      values.date instanceof Date
-        ? values.date.toISOString().split("T")[0]
-        : values.date;
     mutate(
       {
         classRoomId: classroomId as string,
+        //@ts-ignore
         lessonType: Number(values.lessonType),
         title: values.title,
-        date: formattedDate,
+        date: format(values.date, "yyyy-MM-dd"),
         from: values.from,
         to: values.to,
       },
@@ -49,7 +48,6 @@ export default function CreateSession() {
     );
   }
 
-  console.log(form.watch("lessonType"));
   return (
     <Form {...form}>
       <form
@@ -64,11 +62,11 @@ export default function CreateSession() {
             name="lessonType"
             label="نوع الجلسة"
             options={[
-              { label: "شرح", value: ELessonType.Explain },
-              { label: "حل الواجب", value: ELessonType.HomeworkSolution },
-              { label: "تدريب", value: ELessonType.Practice },
-              { label: "مراجعة", value: ELessonType.Revision },
-              { label: "أخرى", value: ELessonType.Other },
+              { label: "شرح", value: ELessonTypeString.Explain },
+              { label: "حل الواجب", value: ELessonTypeString.HomeworkSolution },
+              { label: "تدريب", value: ELessonTypeString.Practice },
+              { label: "مراجعة", value: ELessonTypeString.Revision },
+              { label: "أخرى", value: ELessonTypeString.Other },
             ]}
             placeholder="اختر نوع الجلسة"
           />
@@ -97,7 +95,8 @@ export default function CreateSession() {
             label="من"
             placeholder="وقت البدء"
             Icon={<Clock className="size-4" />}
-            className="appearance-none pr-2 text-right [&::-webkit-calendar-picker-indicator]:hidden"
+            className="appearance-none pr-2 [&::-webkit-calendar-picker-indicator]:hidden"
+            dir="rtl"
           />
 
           <FormInput
@@ -109,7 +108,8 @@ export default function CreateSession() {
             label="إلى"
             placeholder="وقت الانتهاء"
             Icon={<Clock className="size-4" />}
-            className="appearance-none pr-2 text-right ltr:text-left rtl:text-right [&::-webkit-calendar-picker-indicator]:hidden"
+            className="appearance-none pr-2 ltr:text-left rtl:text-right [&::-webkit-calendar-picker-indicator]:hidden"
+            dir="rtl"
           />
         </div>
         <Button type="submit">{isPending ? <Spinner /> : "انشئ"}</Button>

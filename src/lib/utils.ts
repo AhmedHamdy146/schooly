@@ -19,7 +19,28 @@ export function cn(...inputs: ClassValue[]) {
 
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
-import { stat } from "fs";
+
+/**
+ * Converts a time string from 24-hour format (e.g., "14:30")
+ * to 12-hour Arabic format (e.g., "٠٢:٣٠ م").
+ *
+ * @param time24 - Time string in "HH:mm" format (24-hour)
+ * @returns A string formatted in 12-hour Arabic format (e.g., "٠٢:٣٠ م")
+ */
+export function formatArabicTime(time24: string): string {
+  const [hours, minutes] = time24.split(":").map(Number);
+  if (isNaN(hours) || isNaN(minutes)) {
+    throw new Error("Invalid time format. Expected format: HH:mm");
+  }
+
+  const now = new Date();
+  now.setHours(hours);
+  now.setMinutes(minutes);
+  now.setSeconds(0);
+  now.setMilliseconds(0);
+
+  return format(now, "hh:mm aaaa", { locale: ar });
+}
 
 export function getDistanceToNow(date: string | Date) {
   const now = new Date();
@@ -106,8 +127,9 @@ export function base64ToBlob(dataURI: string) {
 
 export function getImageUrl(filename?: string | null): string {
   if (!filename) return "/person1.png";
-  if (filename.startsWith("http")) return filename;
-  return `${process.env.NEXT_PUBLIC_API_URL}/upload/${filename}`;
+  if (filename.startsWith("http") || filename.startsWith("https"))
+    return filename;
+  return process.env.NEXT_PUBLIC_API_URL! + "/upload/" + filename;
 }
 export const getCameraState = (
   hasImage: boolean,
@@ -123,7 +145,7 @@ export function formatDate(date: string) {
   const formattedDate = format(parsedDate, "dd MMMM yyyy", {
     locale: arEG,
   });
-  const formattedTime = format(parsedDate, "HH:mm", {
+  const formattedTime = format(parsedDate, "HH:mm a", {
     locale: arEG,
   });
 
@@ -137,4 +159,38 @@ export function formatDate(date: string) {
     ...data,
     status: "active",
   };
+}
+
+export function isRTL(text: string): boolean {
+  const rtlCharRegex = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+  return rtlCharRegex.test(text.trim()[0]);
+}
+
+export function getSubjectImage(subject: string) {
+  const normalized = subject.trim();
+
+  switch (normalized) {
+    case "رياضيات":
+      return "/maths.jpg";
+    case "فيزياء":
+      return "/physics.jpg";
+    case "كيمياء":
+      return "/physics.jpg"; // استخدم نفس صورة الفيزياء أو ضيف صورة للكيمياء لو عندك
+    case "جغرافيا":
+      return "/geography.jpg";
+    case "اللغة الإنجليزية":
+    case "انجليزي":
+      return "/english.jpg";
+    case "اللغة العربية":
+    case "عربي":
+      return "/arabic.jpg";
+    case "دين":
+    case "التربية الدينية":
+    case "قرآن":
+      return "/quran.jpg";
+    case "علوم":
+      return "/physics.jpg"; // مؤقتًا لو ما عندكش صورة علوم، ممكن تخصص واحدة لاحقًا
+    default:
+      return "/default-subject.png"; // fallback
+  }
 }

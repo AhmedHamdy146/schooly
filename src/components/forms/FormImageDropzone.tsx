@@ -5,7 +5,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { useDropzoneStore } from "@/store/dropzone";
 import useUpload from "@/hooks/useUpload";
 import { useRef } from "react";
+import useGetProfile from "@/hooks/profile/useGetProfile";
 
 interface FormImageDropzoneProps<TFormValues extends FieldValues> {
   control: Control<TFormValues>;
@@ -58,6 +59,8 @@ export default function FormImageDropzone<TFormValues extends FieldValues>({
     },
   });
 
+  const { data: profile } = useGetProfile();
+
   return (
     <FormField
       control={control}
@@ -82,18 +85,19 @@ export default function FormImageDropzone<TFormValues extends FieldValues>({
                     isDragActive && "opacity-50",
                     className,
                   )}
+                  style={{
+                    width: "128px",
+                    height: "128px",
+                    borderRadius: "50%",
+                  }}
                 >
                   <Image
                     src={
                       formFiles[0]?.url ??
-                      (value
-                        ? `${process.env.NEXT_PUBLIC_API_URL}/upload/${value}`
-                        : null) ??
-                      defaultImage
+                      getImageUrl(profile?.data?.profilePictureUrl)
                     }
                     alt="صورة الملف الشخصي"
-                    width={128}
-                    height={128}
+                    fill
                     className="rounded-full border-4 border-neutral-100 bg-orange-300 object-cover shadow-lg"
                     priority
                   />

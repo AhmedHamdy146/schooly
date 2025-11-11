@@ -59,10 +59,10 @@ export default function FormInfiniteSelect<
     fetchFn: (pageNumber) => fetchFn(pageNumber),
   });
 
-  const options = data?.pages.flatMap((page) => page.data) ?? [];
+  const options = data?.pages?.flatMap((page) => page.data) ?? [];
   const lastPage = data?.pages[data.pages.length - 1];
   const hasMoreData =
-    lastPage && lastPage.meta.currentPage < lastPage.meta.totalPages;
+    lastPage && lastPage?.meta?.currentPage < lastPage?.meta?.totalPages;
 
   return (
     <FormField

@@ -21,11 +21,6 @@ const studentExtraKeys = {
 
 const infoItems: InfoItemType[] = [
   {
-    label: "ولي الأمر",
-    icon: User2,
-    key: "parent",
-  },
-  {
     label: "العنوان",
     icon: Info,
     key: "address",
@@ -44,6 +39,11 @@ const infoItems: InfoItemType[] = [
     label: "الصف",
     icon: Info,
     key: "grade",
+  },
+  {
+    label: "ولي الأمر",
+    icon: User2,
+    key: "parent",
   },
 ];
 
@@ -78,7 +78,9 @@ export default function ExtraInfoBox() {
   const getValue = (key: keyof typeof studentExtraKeys) => {
     const value = data.data.studentExtra?.[key];
     if (key === "department" && value === 0) return "أمريكي";
-    return value;
+    else if (key === "department" && value === 1) return "بريطاني";
+    else if (key === "parent") return data?.data?.studentExtra?.parent?.parentName;
+    return value as string;
   };
 
   return (

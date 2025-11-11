@@ -1,6 +1,5 @@
 import useGetComment from "@/hooks/comments/useGetComment";
 import CommentItem from "./CommentItem";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function PostCommentsList({
   postId,

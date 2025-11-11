@@ -1,15 +1,30 @@
 import api from "@/lib/axios";
+import { CLASSROOMS_PER_PAGE } from "@/lib/constants";
 import { isAxiosError } from "axios";
 
-export async function getAllClassrooms() {
+export async function getAllClassrooms({
+  Page,
+  PageSize = CLASSROOMS_PER_PAGE,
+}: {
+  Page?: string | number;
+  PageSize?: string | number;
+}) {
   try {
-    const response = await api.get<IGetAllClassroomsResponse>(`/classroom/all`);
+    const response = await api.get<IPaginatedResponse<IClassroom>>(
+      `/classroom/all`,
+      {
+        params: {
+          page: Page,
+          pageSize: PageSize,
+        },
+      },
+    );
+
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.error(error);
       throw new Error(
-        error.response?.data || "حدث خطأ ما في الحصول على الصفوف",
+        error.response?.data?.message || "حدث خطأ ما في الحصول على الصفوف",
       );
     }
     throw error;
@@ -24,9 +39,8 @@ export async function getSingleClassroom(id: string) {
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.error(error);
       throw new Error(
-        error.response?.data || "حدث خطأ ما في الحصول على الصف المعين",
+        error.response?.data?.message || "حدث خطأ ما في الحصول على الصف المعين",
       );
     }
     throw error;
@@ -39,9 +53,9 @@ export async function getUserClassrooms() {
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.error(error);
       throw new Error(
-        error.response?.data || "حدث خطأ ما في الحصول على فصولك الدراسية",
+        error.response?.data?.message ||
+          "حدث خطأ ما في الحصول على فصولك الدراسية",
       );
     }
     throw error;

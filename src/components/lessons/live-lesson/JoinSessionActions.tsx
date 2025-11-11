@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import Users from "@/components/Users";
 import { MESSAGES } from "@/lib/constants";
 
 interface JoinSessionActionsProps {
@@ -12,7 +11,6 @@ const JoinSessionActions = ({ onJoinSession }: JoinSessionActionsProps) => (
     <Button className="flex-1" onClick={onJoinSession} size="lg">
       {MESSAGES.JOIN_SESSION}
     </Button>
-    <Users />
   </div>
 );
 

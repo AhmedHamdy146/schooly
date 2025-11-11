@@ -4,8 +4,7 @@ import { isWithinInterval, parseISO } from "date-fns";
 import useUpcomingLessons from "./lessons/useUpcomingLessons";
 
 export const useLiveLesson = () => {
-  const { data, isLoading, isError } = useUpcomingLessons(1000000);
-  console.log("useLiveLesson data", data);
+  const { data, isLoading, isError } = useUpcomingLessons();
   const { date, from, to } = data?.pages[0]?.data[0] || {};
 
   const now = new Date();

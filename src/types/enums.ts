@@ -5,7 +5,21 @@ export enum EROLES {
   OWNER = 3,
 }
 
-export enum ELessonType {
+export const lessonTypeMap: Record<string, string> = {
+  "0": "شرح",
+  "1": "حل واجب",
+  "2": "تدريب",
+  "3": "مراجعة",
+  "4": "أخرى",
+};
+export enum ELessonTypeString {
+  Explain = "0",
+  HomeworkSolution = "1",
+  Practice = "2",
+  Revision = "3",
+  Other = "4",
+}
+export enum ELessonTypeNumber {
   Explain = 0,
   HomeworkSolution = 1,
   Practice = 2,

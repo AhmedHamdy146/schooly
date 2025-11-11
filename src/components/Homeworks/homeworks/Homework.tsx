@@ -5,11 +5,10 @@ import { useEffect, useState } from "react";
 import useGetAllHomeworks from "@/hooks/homeworks/useGetAllHomeworks";
 import useGetUserClassrooms from "@/hooks/classrooms/useGetUserClassrooms";
 import HomeworkList from "./HomeworkList";
-import HomeworkFilter from "./HomeworkFilter";
+import HomeworkFilter from "../homeworksFilters/HomeworkFilter";
 import { useRouter, useSearchParams } from "next/navigation";
 import HomeworkHeader from "./HomeworkHeader";
-import RoleGuard from "@/components/RoleGuard";
-import HomeworkHeaderStudent from "./HomeworkHeaderStudent";
+import Error from "@/components/Error";
 
 export default function Homework() {
   const router = useRouter();
@@ -20,11 +19,13 @@ export default function Homework() {
   );
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const { data, isError, ref, isFetching } = useGetAllHomeworks(
-    ["homeworks", selectedClass],
     selectedClass === "all" ? undefined : selectedClass,
   );
-  const { data: classrooms, isLoading } = useGetUserClassrooms();
-
+  const {
+    data: classrooms,
+    isLoading,
+    isError: isGetUserClassroomsError,
+  } = useGetUserClassrooms();
   const homeworks = data?.pages.flatMap((data) => data.data);
 
   useEffect(() => {
@@ -36,33 +37,22 @@ export default function Homework() {
     router.replace(newUrl, { scroll: false });
   }, [selectedClass, router]);
 
-  if (isError) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-red-500">حدث خطأ أثناء تحميل الواجبات</p>
-        </div>
-      </div>
-    );
+  if (isError || isGetUserClassroomsError) {
+    return <Error />;
   }
 
   return (
     <div className="bg-gray-50 p-6" dir="rtl">
       <div className="mx-auto max-w-7xl space-y-6">
-        <RoleGuard role="TEACHER">
-          <HomeworkHeader
-            isCreateDialogOpen={isCreateDialogOpen}
-            setIsCreateDialogOpen={setIsCreateDialogOpen}
-          />
-        </RoleGuard>
-        <RoleGuard role="STUDENT">
-          <HomeworkHeaderStudent />
-        </RoleGuard>
+        <HomeworkHeader
+          isCreateDialogOpen={isCreateDialogOpen}
+          setIsCreateDialogOpen={setIsCreateDialogOpen}
+        />
 
         <HomeworkFilter
           selectedClass={selectedClass}
           setSelectedClass={setSelectedClass}
-          classrooms={classrooms}
+          classrooms={classrooms?.data}
           isLoading={isLoading}
         />
 

@@ -12,8 +12,8 @@ import useLogin from "@/hooks/authentication/useLogin";
 import Spinner from "./Spinner";
 
 const defaultValues: loginSchema = {
-  email: "mahmoud@example.com",
-  password: "mahmoud010",
+  email: "mahmoud@teacher.com",
+  password: "123456",
   rememberMe: true,
 };
 
@@ -38,6 +38,7 @@ export default function LoginForm() {
             label="البريد الالكتروني"
             placeholder="example@gmail.com"
             autoComplete="email"
+            dir="ltr"
           />
           <FormPassword<loginSchema>
             control={form.control}
@@ -45,8 +46,9 @@ export default function LoginForm() {
             label="كلمة المرور"
             placeholder="ادخل كلمة المرور"
             autoComplete="current-password"
+            dir="ltr"
           />
-          <div className=" flex justify-between text-[12px]">
+          <div className="flex justify-between text-[12px]">
             <FormCheckbox
               control={form.control}
               name="rememberMe"
@@ -54,7 +56,7 @@ export default function LoginForm() {
             />
             <Link
               href="/forgot-password"
-              className="text-neutral-500 font-medium "
+              className="font-medium text-neutral-500"
             >
               هل نسيت كلمة السر؟
             </Link>

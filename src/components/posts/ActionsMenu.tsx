@@ -40,7 +40,10 @@ export default function ActionsMenu({ onDelete, onEdit }: ActionsMenuProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem className="text-red-500" onClick={() => setOpenConfirm(true)}>
+          <DropdownMenuItem
+            className="text-red-500"
+            onClick={() => setOpenConfirm(true)}
+          >
             حذف
           </DropdownMenuItem>
           {onEdit && (
@@ -50,19 +53,19 @@ export default function ActionsMenu({ onDelete, onEdit }: ActionsMenuProps) {
       </DropdownMenu>
 
       <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
-        <DialogContent className="bg-white">
+        <DialogContent className="w-[clamp(300px,90vw,500px)]! bg-white">
           <DialogHeader>
             <DialogTitle className="text-center">هل أنت متأكد؟</DialogTitle>
             <DialogDescription className="text-center">
               سيتم حذف نهائيًا ولا يمكن التراجع عن هذه العملية.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="flex justify-center! gap-2">
-            <Button variant="destructive" onClick={handleConfirmDelete}>
-              احذف
-            </Button>
+          <DialogFooter dir="rtl" className="flex justify-center! gap-2">
             <Button variant="outline" onClick={() => setOpenConfirm(false)}>
               إلغاء
+            </Button>
+            <Button variant="destructive" onClick={handleConfirmDelete}>
+              احذف
             </Button>
           </DialogFooter>
         </DialogContent>

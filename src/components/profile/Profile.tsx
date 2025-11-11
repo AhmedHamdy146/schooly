@@ -33,24 +33,21 @@ export default function Profile() {
   const form = useForm<editProfileSchema>({
     resolver: zodResolver(editProfileSchema),
   });
-
   useEffect(() => {
     if (data?.data) {
       form.reset({
         name: data.data.name,
         email: data.data.email,
-        profilePictureUrl: data.data.profilePictureUrl,
       });
     }
   }, [data, form]);
 
   function onSubmit(values: editProfileSchema) {
-    console.log(values);
     mutate(values);
     setIsEditMode(false);
+
   }
 
-  console.log(form.watch());
 
   return (
     <Form {...form}>
@@ -59,7 +56,15 @@ export default function Profile() {
           <div className="from-primary h-32 bg-gradient-to-r to-emerald-600"></div>
           <div className="relative px-6 pb-3">
             <div className="relative -mt-16 mb-6">
-              <div className="relative inline-block">
+              <div
+                style={{
+                  width: "128px",
+                  height: "128px",
+                  borderRadius: "50%",
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                }}
+                className="relative inline-block"
+              >
                 {isEditMode ? (
                   <FormImageDropzone<editProfileSchema>
                     control={form.control}
@@ -69,14 +74,10 @@ export default function Profile() {
                   <Skeleton className="h-32 w-32 rounded-full" />
                 ) : (
                   <Image
-                    src={
-                      form.getValues("profilePictureUrl")
-                        ? getImageUrl(form.getValues("profilePictureUrl"))
-                        : getImageUrl(data?.data?.profilePictureUrl)
-                    }
+                    suppressHydrationWarning
+                    src={getImageUrl(data?.data?.profilePictureUrl)}
                     alt="صورة الملف الشخصي"
-                    width={128}
-                    height={128}
+                    fill
                     className="rounded-full border-4 border-neutral-100 bg-orange-300 object-cover shadow-lg"
                     priority
                   />
@@ -153,6 +154,7 @@ export default function Profile() {
                   className="h-12"
                   disabled={!isEditMode}
                   Icon={<Mail size={18} />}
+                  dir="ltr"
                 />
               ) : (
                 <InfoItem
